@@ -1,0 +1,20 @@
+{% extends '_base.html' %}href
+
+{% block content %}
+
+<h1>Confirm Gift</h1>
+<p>Sender: {{sender}}</p>
+<p {% if receiver_err %}class="err"{% endif %}>Receiver: {{receiver}}</p>
+<p {% if amount_err %}class="err"{% endif %}>Amount: {{amount}}</p>
+<p>Message:</p>
+<p class="message">{% for l in message %}ー {{l | striptags}}<br>{% endfor %}</p>
+
+<div class="btnmenu mt20">
+    <a class="big_btn" href="./">Cancel</a>
+    {% if not_err %}<a {% else %} <p {% endif %} class="big_btn disabled" href="./confirm">Send{% if not_err %}</a>{% else %}</p>{% endif %}
+</div>
+
+<!--<button onclick="location.href='./'" type="button">Cancel</button>
+<button onclick="location.href='./confirm'" type="button" {% if s_class or a_class %} disabled="1" {% endif %}>Send</button>
+-->
+{% endblock content %}

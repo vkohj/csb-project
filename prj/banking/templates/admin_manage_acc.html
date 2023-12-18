@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <p><a href="/admin/manage/">Return</a></p>
+        <h1>Manage {{ type }}</h1>
+        <p>{{ acc.user.username }} ( {{ acc.num }} )</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <p id="state">{{state}}</p>
+            {{ form }}
+            <button type="submit">Modify</button>
+        </form>
+    </body>
+</html>

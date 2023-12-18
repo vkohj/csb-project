@@ -1,0 +1,40 @@
+{% load static %}
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+        <script src="{% static 'script.js' %}"></script>
+    </head>
+
+    <body>
+        <nav>
+            <img src="{% static 'logo.svg' %}">
+            {% if anonymous != True %}
+            <a href="/">Home</a>
+            <a href="../send">Send</a>
+            <a href="../history">History</a>
+            <a href="/logout">Logout</a>
+            {% endif %}
+        </nav>
+
+        {% if header == True %}
+        <header>
+            <div>
+                <img src="{% static 'logo.svg' %}">
+                <p>Point</p>
+            </div>
+        </header>
+        {% endif %}
+    
+        <div id="container">
+            <div id="content">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+
+        <footer>
+            <p>©株式会社イーポイント 2023</p>
+        </footer>
+    </body>
+</html>

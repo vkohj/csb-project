@@ -1,0 +1,39 @@
+{% load static %}
+<html>
+    <head>
+        <script src="{% static 'script.js' %}"></script>
+    </head>
+
+    <body>
+        <p><a href="/admin/">Return to Control Panel</a></p>
+        <h1>Create account</h1>
+        <form method="post">
+            {% csrf_token %}
+            <p id="state">{{state}}</p>
+            <h3>User Information</h3>
+            
+            <div>
+                <label for="username">Username: </label>
+                <input name="username" id="username" type="text" required>
+            </div>
+
+            <div>
+                <label for="password">Password: </label>
+                <input name="password" id="password" type="text" disabled="1" value="{{pass}}" required>
+            </div>
+
+            <h3>Account Information</h3>
+            <div>
+                <label for="num">Account Number: </label>
+                <input name="num" id="num" type="text" oninput="input(this)" maxlength="12" required>
+            </div>
+
+            <div>
+                <label for="balance">Balance: </label>
+                <input name="balance" id="balance" type="number" min="0" required>
+            </div>
+
+            <button type="submit">Create</button>
+        </form>
+    </body>
+</html>

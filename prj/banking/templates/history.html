@@ -1,0 +1,26 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1>History</h1>
+<table>
+    <tr>
+        <th>Type</th>
+        <th></th>
+        <th>Amount</th>
+    </tr>
+    {% for log, amount in l %}
+    <tr>
+        <td>{{log.name}}</td> 
+        <td></td>
+        <td>{{amount}}</td>
+    </tr>
+    <tr>
+        <td>{{log.acc1.user.username}} ({{log.acc1.num}})</td> 
+        <td>>></td>
+        <td>{{log.acc2.user.username}} ({{log.acc2.num}})</td> 
+    </tr>
+    {% endfor %} 
+</table>
+
+{% endblock content %}

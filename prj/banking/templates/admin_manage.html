@@ -1,0 +1,11 @@
+<html>
+    <body>
+        <p><a href="/admin/">Return to Control Panel</a></p>
+        <h1>Manage accounts</h1>
+        <ul id="admin">
+            {% for acc in accounts %}
+                <li style="padding-bottom: 4px;">{{ acc.num }} ({{ acc.user.username }})<a style="padding-left: 10px;" href="/admin/manage/{{ acc.user.username }}/balance/">Change Balance</a><a style="padding-left: 10px;" href="/admin/manage/{{ acc.user.username }}/password/">Change Password</a></li> 
+            {% endfor %} 
+        </ul>
+    </body>
+</html>

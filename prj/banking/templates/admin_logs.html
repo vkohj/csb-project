@@ -1,0 +1,21 @@
+<html>
+    <body>
+        <p><a href="/admin/">Return to Control Panel</a></p>
+        <h1>Logs</h1>
+        <table id="admin">
+            {% for log in logs %}
+                <tr>
+                    <td>{{log.type}}</td>
+                    <td>{{log.acc1.num}}<br>{{log.acc1.user.username}}</td> 
+                    <td>{{log.acc2.num}}<br>{{log.acc2.user.username}}</td> 
+                    <td>{{log.sdetail1}}</td>
+                    <td>{{log.sdetail2}}</td>
+                    <td>{{log.ldetail}}</td>
+                    <td>{% if log.type == "transaction" %}<a>Cancel</a>{% endif %}</td>
+                    <td>{{log.ip}}</td>
+                    <td>{{log.date}}</td>
+                </tr>
+            {% endfor %} 
+        </table>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1 class="mb0">Login</h1>
+<form method="post">
+    {% csrf_token %}
+
+    {% if err %}
+    <p class="mt0 mb10 p0 err">{{err}}</p>
+    {% endif %}
+
+    <div>
+        <label for="username">Username</label><br>
+        <input name="username" id="username" type="text" maxlength="32">
+    </div>
+        
+    <div>
+        <label for="password">Password</label><br>
+        <input name="password" id="password" type="text">
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+<div class="mt10 center">
+    <a href="../create" >Create new account</a>
+</div>
+    
+
+{% endblock content %}

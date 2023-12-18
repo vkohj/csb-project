@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="190.53381px" height="150.6211px" viewBox="0 0 190.53381 150.6211" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB" id="filter_1">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 0" />
+      <feOffset dx="0" dy="2" />
+      <feGaussianBlur stdDeviation="2" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.39215687 0 0 0 0 0.39215687 0 0 0 0 0.39215687 0 0 0 0.49803922 0" />
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect0_dropShadow" />
+      <feBlend mode="normal" in="SourceGraphic" in2="effect0_dropShadow" result="shape" />
+    </filter>
+  </defs>
+  <g filter="url(#filter_1)">
+    <g id="グループ">
+      <path d="M8.3705 108.771L157.511 105.799L144.311 138.621L0 136.645L8.3705 108.771Z" id="ベクター-2" fill="#403C3C" fill-rule="evenodd" stroke="none" />
+      <path d="M29.3998 1.42666L178.534 0L164.599 31.936L20.9713 29.7836L29.3998 1.42666Z" id="ベクター-3" fill="#403C3C" fill-rule="evenodd" stroke="none" />
+      <path d="M57.2861 111.538L80.8564 26.2747L123.221 26.6847L93.1743 111.025L57.2861 111.538Z" id="ベクター" fill="#403C3C" fill-rule="evenodd" stroke="none" />
+      <path d="M11.7852 111.538L145.99 111.538L137.447 132.854L5.02151 132.854L11.7852 111.538Z" id="長方形-6" fill="#6DC96B" fill-rule="evenodd" stroke="none" />
+      <path d="M83.0827 26.2748L110.78 26.2748L87.0053 111.538L59.1309 111.538L83.0827 26.2748Z" id="長方形-3" fill="#6DC96B" fill-rule="evenodd" stroke="none" />
+      <path d="M33.1442 4.95899L167.349 4.95899L158.806 26.2748L26.3805 26.2748L33.1287 5.00782L33.1442 4.95899Z" id="長方形-5" fill="#6DC96B" fill-rule="evenodd" stroke="none" />
+      <g id="ハイライト" transform="translate(81.71411 4.9473267)">
+        <path d="M46.5842 0.0108643L37.7122 21.3263L50.9791 21.3518L59.9829 0.0299379L46.5842 0.0108643Z" id="ベクター-7" fill="#7EC96B" fill-rule="evenodd" stroke="none" />
+        <path d="M60.0077 0.0220032L50.9481 21.3549L64.0551 21.3305L72.9845 0.0254517L60.0077 0.0220032Z" id="ベクター-6" fill="#94C96B" fill-rule="evenodd" stroke="none" />
+        <path d="M73.0145 0L63.9829 21.5132L77.106 21.5235L85.6313 0.0090332L73.0145 0Z" id="ベクター-4" fill="#ABC96B" fill-rule="evenodd" stroke="none" />
+        <path d="M7.89515 106.596L0 127.93L19.026 127.963L26.9985 106.572L7.89515 106.596Z" id="ベクター-5" fill="#7EC96B" fill-rule="evenodd" stroke="none" />
+        <path d="M44.7566 106.498L36.6749 127.933L55.7473 127.945L64.2999 106.57L44.7566 106.498Z" id="ベクター-2" fill="#ABC96B" fill-rule="evenodd" stroke="none" />
+        <path d="M26.9985 106.578L18.9985 127.916L55.7386 127.936L64.2985 106.576L26.9985 106.578Z" id="ベクター" fill="#94C96B" fill-rule="evenodd" stroke="none" />
+      </g>
+    </g>
+  </g>
+</svg>

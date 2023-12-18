@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<p class="mt20 mb0"><a href="../login"><< Return to login</a></p>
+<h1 class="mt0">Account created</h1>
+<p>Username: {{acc.user.username}}</p>
+<p>Password: {{pswd}}</p>
+<p>Account Number: {{acc.num}}</p>
+<p>Balance: {{acc.balance}}℗</p>
+
+{% endblock content %}

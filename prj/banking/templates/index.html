@@ -1,0 +1,17 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1>Control Panel</h1>
+
+<p>Welcome {{acc.user}}<br>
+Logged in at {{acc.user.last_login}}</p>
+<p>Account number: {{acc.num}}</p>
+<div class="info">Balance: {{acc.balance}}℗</div>
+
+<div class="btnmenu">
+    <a class="big_btn" href="../send/">Send</a>
+    <a class="big_btn" href="../history/">History</a>
+</div>
+
+{% endblock content %}

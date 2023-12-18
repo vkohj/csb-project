@@ -1,0 +1,19 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<p class="mt20 mb0"><a href="../login"><< Return to login</a></p>
+<h1 class="mt0">Create account</h1>
+<form method="post">
+    {% csrf_token %}
+    <p id="state" class="err">{{state}}</p>
+    
+    <div>
+        <label for="username">Username: </label>
+        <input name="username" id="username" type="text" required>
+    </div>
+
+    <button type="submit">Create</button>
+</form>
+
+{% endblock content %}

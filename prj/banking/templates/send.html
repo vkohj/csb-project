@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1>Gift</h1>
+<form method="post">
+    {% csrf_token %}
+    <div>
+    <label for="sender">Sender: </label>
+    <input name="sender" id="sender" type="text" oninput="input(this)" maxlength="12" value="{{num}}" disabled="1">
+    </div>
+
+    <div>
+    <label for="receiver">Receiver: </label>
+    <input name="receiver" id="receiver" type="text" oninput="input(this)" maxlength="12" required>
+    </div>
+
+    <div>
+    <label for="amount">Amount: </label>
+    <input name="amount" id="amount" type="number" min="0" required>
+    </div>
+
+    <div>
+        <label for="message">Message: </label>
+        <textarea name="message" id="message" rows="2"></textarea>
+    </div>
+
+    <button type="submit">Send</button>
+</form>
+{% endblock content %}
