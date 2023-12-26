@@ -33,5 +33,5 @@ class LoginAttempts(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def pastExpiry(self):
-        return (timezone.now() - self.date) > timedelta(minutes=1)
+        return (timezone.now() - self.date) > timedelta(minutes=3)
 

@@ -145,7 +145,7 @@ def vCreate(request):
     acc = Account.objects.create(user=user, balance=blc, num=num)
     acc.save()
 
-    return render(request, "create_finish.html", {"acc":acc, "pswd":pswd})
+    return render(request, "create_finish.html", {"acc":acc, "pswd":pswd, "anonymous":True})
 
 
 # 「index.html」
