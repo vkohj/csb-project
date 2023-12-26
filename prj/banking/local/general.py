@@ -8,14 +8,14 @@ def localCheckNoSpecials(str):
         return False
     return True
 
-def localCheckPassword(pswd):
+def localCheckPassword(str):
     # FAULT: A04:2021-Insecure Design (Password is automatically generated, 
     #        and only 6 letters long)
 
     # REMOVE:
-    if len(pswd) < 5: return False
+    if len(str) < 5: return False
     # FIX:
-    # if len(pswd) < 10: return False
+    # if len(str) < 10: return False
     
     # Check if all characters in string are allowed
     for c in str:
