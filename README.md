@@ -21,4 +21,5 @@ as it would not need to exist on an actual server.
 
 ### Default users
 * admin (password: ks0prUxWDwPJv96, account: 55-0080-0810)
+
 For more users, please create them through the log in page.
