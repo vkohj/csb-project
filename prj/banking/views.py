@@ -51,7 +51,7 @@ def vLogin(request):
     # 「POST」
     name = request.POST["username"]
 
-    # FAULT: A07:2021-Identification and Authentication Failures (Bruteforcing possible)
+    # FLAW: A07:2021-Identification and Authentication Failures (Bruteforcing possible)
     # FIX:
     #if len(localGetLoginAttemptsByName(name)) >= 3:
     #    return HttpResponseRedirect("?t=l_toomany_n")
@@ -63,11 +63,11 @@ def vLogin(request):
     # Authenticate, if invalid, exit
     user = authenticate(request, username=name, password=request.POST["password"])
     if user is None:
-        # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+        # FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
         # FIX: 
         # localLog(request, "login", True, name="LOGIN FAIL", sdetail1=name)
 
-        # FAULT: A07:2021-Identification and Authentication Failures (Bruteforcing is not reported)
+        # FLAW: A07:2021-Identification and Authentication Failures (Bruteforcing is not reported)
         # FIX:
         # localReportLoginFail(request, name)
 
@@ -76,7 +76,7 @@ def vLogin(request):
     # Complete log-in process
     login(request, user)
     
-    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
     # FIX: 
     # localLog(request, "login", True, name="LOGIN OK", sdetail1=name)
         
@@ -108,7 +108,7 @@ def vCreate(request):
     
     username = request.POST["username"]
     
-    # FAULT: A04:2021-Insecure Design (Password is automatically generated, 
+    # FLAW: A04:2021-Insecure Design (Password is automatically generated, 
     #        and only 6 letters long)
     # REMOVE:
     pswd = localGeneratePassword()
@@ -152,7 +152,7 @@ def vCreate(request):
 # See the /user/<username>/hello page
 @login_required
 def vHello(request, username):
-    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # FLAW: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
     # REMOVE:
     user,acc = localGetAgent(username)
     # FIX:
@@ -167,7 +167,7 @@ def vHello(request, username):
 # 「send.html」
 @login_required
 def vSend(request, username):
-    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # FLAW: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
     # REMOVE:
     user,acc = localGetAgent(username)
     # FIX:
@@ -217,7 +217,7 @@ def vSend(request, username):
 # Gift has been confirmed by the sender, so deduct the points and send them
 @login_required
 def vSendConfirm(request, username):
-    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # FLAW: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
     # REMOVE:
     user,acc = localGetAgent(username)
     # FIX:
@@ -238,7 +238,7 @@ def vSendConfirm(request, username):
 # See the transaction history
 @login_required
 def vTransactions(request, username):
-    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # FLAW: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
     # REMOVE:
     user,acc = localGetAgent(username)
     # FIX:
@@ -304,7 +304,7 @@ def vAdminManageBalance(request, username):
     acc.balance = int(balance)
     acc.save()
 
-    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
     # FIX: 
     # localLog(request, "balance", False, name="Balance Change", acc1=acc, sdetail1=int(balance), ldetail="Balance was changed by the administrator.")
 
@@ -332,13 +332,13 @@ def vAdminManagePassword(request, username):
     user.set_password(pswd)
     user.save()
 
-    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
     # FIX: 
     # localLog(request, "password", False, name="Password Change", sdetail1=user.username)
 
     return HttpResponseRedirect("?t=ok")
 
-# FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+# FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
 # FIX: 
 #@user_passes_test(localMustBeAdmin)
 #def vAdminLogs(request):    
@@ -347,7 +347,7 @@ def vAdminManagePassword(request, username):
     template = loader.get_template("admin_logs.html")
     return HttpResponse(template.render({"logs":logs}, request))
 
-# FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+# FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
 # FIX: 
 #@user_passes_test(localMustBeAdmin)
 #@transaction.atomic

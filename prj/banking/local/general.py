@@ -9,7 +9,7 @@ def localCheckNoSpecials(str):
     return True
 
 def localCheckPassword(str):
-    # FAULT: A04:2021-Insecure Design (Password is automatically generated, 
+    # FLAW: A04:2021-Insecure Design (Password is automatically generated, 
     #        and only 6 letters long)
 
     # REMOVE:

@@ -28,7 +28,7 @@
             <td>{{log.acc2.user.username}} ({{log.acc2.num}})</td> 
         </tr>
         <tr>
-            <!-- FAULT: A03:2021-Injection (Allows execution of JS, etc.!) -->
+            <!-- FLAW: A03:2021-Injection (Allows execution of JS, etc.!) -->
             <!-- FIX: Remove safe from inside of the <td> tag below -->
             <td colspan="3" class="message">Message:<br>{% for r in message %}ー {{r | safe}}<br>{% endfor %}</td>
         </tr>

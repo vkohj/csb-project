@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/manage/<slug:username>/balance/', views.vAdminManageBalance, name='admin_manage_balance'),
     path('admin/manage/<slug:username>/password/', views.vAdminManagePassword, name='admin_manage_pass'),
     
-    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FLAW: A09:2021-Security Logging and Monitoring Failures (No logging)
     # FIX: 
     #path('admin/logs/', views.vAdminLogs, name='admin_logs'),
     #path('admin/logs/<int:id>/cancel', views.vAdminLogsCancel, name='admin_logs_cancel'),
