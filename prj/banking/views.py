@@ -3,8 +3,9 @@ from django.http import *
 from django.template import loader
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
+from django.db import transaction
 
 from .models import *
 from .forms import *
@@ -23,37 +24,61 @@ def vIndex(request):
 
 # 「INIT」
 # Used for testing (not considered part of the site)
+@transaction.atomic
 def vInit(request):
     User.objects.all().delete() 
     u = User.objects.create_user(username="admin")
-    u.set_password("admin")
+    u.set_password("ks0prUxWDwPJv96")
     u.save()
 
-    a = Account.objects.create(user=u, balance=100, num="55-0080-0810")
+    admin = Admin.objects.create(user=u)
+
+    a = Account.objects.create(user=u, balance=1000, num="55-0080-0810")
     return HttpResponse("Initialization complete. Not part of the project.")
 
 
 # 「login.html」（GET & POST）
 # The log-in page
 def vLogin(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect("/")
 
     # 「GET」
     if request.method =='GET':
-        return render(request, "login.html", {"form":LoginForm(), "err":localGetErr(request), "anonymous":True, "header":True})
+        return render(request, "login.html", {"err":localGetErr(request), "anonymous":True, "header":True})
 
 
     # 「POST」
     name = request.POST["username"]
-    user = authenticate(request, username=name, password=request.POST["password"])
 
-    # If invalid, exit
+    # FAULT: A07:2021-Identification and Authentication Failures (Bruteforcing possible)
+    # FIX:
+    #if len(localGetLoginAttemptsByName(name)) >= 3:
+    #    return HttpResponseRedirect("?t=l_toomany_n")
+    
+    #if len(localGetLoginAttemptsByRequest(request)) >= 5:
+    #    return HttpResponseRedirect("?t=l_toomany_r")
+    
+
+    # Authenticate, if invalid, exit
+    user = authenticate(request, username=name, password=request.POST["password"])
     if user is None:
-        localLog(request, "login", True, name="LOGIN FAIL", sdetail1=name)
+        # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+        # FIX: 
+        # localLog(request, "login", True, name="LOGIN FAIL", sdetail1=name)
+
+        # FAULT: A07:2021-Identification and Authentication Failures (Bruteforcing is not reported)
+        # FIX:
+        # localReportLoginFail(request, name)
+
         return HttpResponseRedirect("?t=l_invalid")
 
     # Complete log-in process
     login(request, user)
-    localLog(request, "login", True, name="LOGIN OK", sdetail1=name)
+    
+    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FIX: 
+    # localLog(request, "login", True, name="LOGIN OK", sdetail1=name)
         
     if "next" in request.GET: return HttpResponseRedirect(request.GET["next"])
     return HttpResponseRedirect("/")
@@ -69,6 +94,8 @@ def vLogout(request):
 # 「create.html」（GET & POST）
 # Create a new account.
 def vCreate(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect("/")
 
     # 「GET」
     if request.method =='GET':
@@ -80,13 +107,28 @@ def vCreate(request):
         return HttpResponse("Invalid!")
     
     username = request.POST["username"]
+    
+    # FAULT: A04:2021-Insecure Design (Password is automatically generated, 
+    #        and only 6 letters long)
+    # REMOVE:
     pswd = localGeneratePassword()
+    
+    # FIX:
+    #if "pswd" not in request.POST or "pswd2" not in request.POST:
+    #    return HttpResponseRedirect("?t=err")
+    #
+    #if request.POST["pswd"] != request.POST["pswd2"]:
+    #    return HttpResponseRedirect("?t=c_nomatch")
+    #
+    #pswd = request.POST["pswd"]
+    
+    
     blc = 0
     num = localGenerateAccNumber()
 
     # Username, generated password check
-    if len(username) < 4 or len(username) > 32 or not localCheckNoSpecials(username): return HttpResponseRedirect("?t=c_username")
-    if not localCheckPassword(pswd): return HttpResponseRedirect("?t=password")
+    if len(username) < 6 or len(username) > 32 or not localCheckNoSpecials(username): return HttpResponseRedirect("?t=c_username")
+    if not localCheckPassword(pswd): return HttpResponseRedirect("?t=c_password")
 
     # CHECK IF EXISTS
     try:
@@ -94,11 +136,14 @@ def vCreate(request):
        return HttpResponseRedirect("?t=c_exists")
     except User.DoesNotExist: pass
 
+    print(username)
+
     user = User.objects.create(username=username)
     user.set_password(pswd)
     user.save()
 
     acc = Account.objects.create(user=user, balance=blc, num=num)
+    acc.save()
 
     return render(request, "create_finish.html", {"acc":acc, "pswd":pswd})
 
@@ -107,7 +152,13 @@ def vCreate(request):
 # See the /user/<username>/hello page
 @login_required
 def vHello(request, username):
+    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # REMOVE:
     user,acc = localGetAgent(username)
+    # FIX:
+    #user, acc = localGetAgent(request.user.username)
+
+
     if acc is None: return HttpResponse("404!")
 
     return render(request, "index.html", {"acc":acc})
@@ -116,7 +167,12 @@ def vHello(request, username):
 # 「send.html」
 @login_required
 def vSend(request, username):
+    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # REMOVE:
     user,acc = localGetAgent(username)
+    # FIX:
+    #user, acc = localGetAgent(request.user.username)
+
     if acc is None: return HttpResponse("404!")
 
     # 「GET」
@@ -159,15 +215,20 @@ def vSend(request, username):
 
 # SEND PROCESS
 # Gift has been confirmed by the sender, so deduct the points and send them
+@login_required
 def vSendConfirm(request, username):
-    # Get accounts, no need to check if exists.
-    user, acc = localGetAgent(username)
+    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # REMOVE:
+    user,acc = localGetAgent(username)
+    # FIX:
+    #user, acc = localGetAgent(request.user.username)
+
     receiver = localGetAccountByNumber(request.session["s_receiver"])
     amount = int(request.session["s_amount"])
     message = request.session["s_message"]
 
     # Create transaction, return "Illegal" if something goes wrong
-    if not localTransaction(acc, receiver, amount, message):
+    if not localTransaction(request, acc, receiver, amount, message):
         return HttpResponse("Illegal!")
 
     return HttpResponseRedirect("./?t=s_sent")
@@ -175,12 +236,19 @@ def vSendConfirm(request, username):
 
 # 「history.html」
 # See the transaction history
+@login_required
 def vTransactions(request, username):
-    user, acc = localGetAgent(username)
+    # FAULT: A01:2021-Broken Access Control (IF logged in, user can access any user's data)
+    # REMOVE:
+    user,acc = localGetAgent(username)
+    # FIX:
+    #user, acc = localGetAgent(request.user.username)
+
     if acc is None: return HttpResponse("404!")
 
     transactions = list(Log.objects.filter((Q(acc1=acc) | Q(acc2=acc)) & Q(type="transaction") & Q(hidden=False)).order_by("-id"))
     amounts = []
+    messages = []
 
     # Check if the transaction was done by the user, or received by the user
     for t in transactions:
@@ -191,15 +259,17 @@ def vTransactions(request, username):
         except:
             s = "ERR"
         amounts.append(s)
+        messages.append(t.ldetail.split("\n"))
     
     # Conbine the transactions and amounts
-    data = zip(transactions, amounts)
+    data = zip(transactions, amounts, messages)
 
     return render(request, "history.html", {"l":data})
 
 
 
 # ADMIN
+@user_passes_test(localMustBeAdmin)
 def vAdmin(request):
     if (request.user.is_authenticated):
         template = loader.get_template("admin.html")
@@ -207,66 +277,15 @@ def vAdmin(request):
     
     return HttpResponseRedirect("/login/?next=/admin/")
 
-def vAdminCreate(request):
-    if request.method =='GET':
-        state = ""
-        if "t" in request.GET:
-            t = request.GET["t"]
-            if t == "a_exists": state = "Account number is already in use!"
-            elif t == "u_exists": state = "Username is already in use!"
-            elif t == "password": state = "Password must be 6 letters or more."
-            elif t == "username": state = "Username must be between 4 and 32 letters. Username cannot include special characters."
-            elif t == "balance": state = "Balance must be positive."
-            elif t == "num": state = "Account number must be of format XX-XXXX-XXXX."
-            elif t == "created": state = "Account created."
-
-        pswd = localGeneratePassword()
-        request.session["c_pswd"] = pswd
-
-        template = loader.get_template("admin_create.html")
-        return HttpResponse(template.render({"pass":pswd, "state":state}, request))
-    
-    user = request.POST["username"]
-    blc = request.POST["balance"]
-    num = request.POST["num"]
-
-    #pswd = request.POST["password"]
-    if "c_pswd" not in request.session: return HttpResponseRedirect("?t=password")
-    pswd = request.session["c_pswd"]
-
-    if len(user) < 4 or len(user) > 32 or not localCheckNoSpecials(user): return HttpResponseRedirect("?t=username")
-    if int(blc) < 0: return HttpResponseRedirect("?t=balance")
-    if len(num) != 12 or num[2] != "-" or num[7] != "-": return HttpResponseRedirect("?t=num")
-
-    if not localCheckPassword(pswd): return HttpResponseRedirect("?t=password")
-
-    # CHECK IF EXISTS
-    try:
-       User.objects.get(username=user)
-       return HttpResponseRedirect("?t=u_exists")
-    except User.DoesNotExist:
-        pass
-
-    try:
-       Account.objects.get(num=num)
-       return HttpResponseRedirect("?t=a_exists")
-    except Account.DoesNotExist:
-        pass
-
-    u = User.objects.create(username=user)
-    u.set_password(pswd)
-    u.save()
-
-    a = Account.objects.create(user=u, balance=blc, num=num)
-
-    return HttpResponseRedirect("?t=created")
-
+@user_passes_test(localMustBeAdmin)
 def vAdminManage(request):
     template = loader.get_template("admin_manage.html")
 
     accounts = Account.objects.all()
     return HttpResponse(template.render({"accounts":accounts}, request))
 
+@user_passes_test(localMustBeAdmin)
+@transaction.atomic
 def vAdminManageBalance(request, username):
     user = localGetUser(username)
     if user is None: return HttpResponse("404")
@@ -285,9 +304,14 @@ def vAdminManageBalance(request, username):
     acc.balance = int(balance)
     acc.save()
 
+    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FIX: 
+    # localLog(request, "balance", False, name="Balance Change", acc1=acc, sdetail1=int(balance), ldetail="Balance was changed by the administrator.")
+
     return HttpResponseRedirect("?t=ok")
 
-
+@user_passes_test(localMustBeAdmin)
+@transaction.atomic
 def vAdminManagePassword(request, username):
     user = localGetUser(username)
     if user is None: return HttpResponse("404")
@@ -308,11 +332,43 @@ def vAdminManagePassword(request, username):
     user.set_password(pswd)
     user.save()
 
+    # FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+    # FIX: 
+    # localLog(request, "password", False, name="Password Change", sdetail1=user.username)
+
     return HttpResponseRedirect("?t=ok")
 
-def vAdminLogs(request):
+# FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+# FIX: 
+#@user_passes_test(localMustBeAdmin)
+#def vAdminLogs(request):    
     logs = Log.objects.all().order_by("-id")
 
     template = loader.get_template("admin_logs.html")
     return HttpResponse(template.render({"logs":logs}, request))
 
+# FAULT: A09:2021-Security Logging and Monitoring Failures (No logging)
+# FIX: 
+#@user_passes_test(localMustBeAdmin)
+#@transaction.atomic
+#def vAdminLogsCancel(request, id:int):
+    log = localGetLogByID(id)
+    if log is None or log.type != "transaction" or log.hidden == True: return HttpResponse("Invalid!")
+
+    # Hide log
+    log.hidden = True
+    log.save()
+
+    # Refund
+    try:
+        b = localTransaction(request, log.acc2, log.acc1, int(log.sdetail1), "", "refund", "REFUND", allowNegative=True)
+    except:
+        b = False
+
+    # If failed, make log visible again
+    if b == False:
+        log.hidden = False
+        log.save()
+        return HttpResponse("Invalid!")
+
+    return HttpResponseRedirect("../")

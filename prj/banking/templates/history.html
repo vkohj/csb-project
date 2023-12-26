@@ -2,25 +2,39 @@
 
 {% block content %}
 
+<script>
+    window.onload = function() { historyTableOnLoad() }
+</script>
+
 <h1>History</h1>
-<table>
-    <tr>
-        <th>Type</th>
-        <th></th>
-        <th>Amount</th>
-    </tr>
-    {% for log, amount in l %}
-    <tr>
-        <td>{{log.name}}</td> 
-        <td></td>
-        <td>{{amount}}</td>
-    </tr>
-    <tr>
-        <td>{{log.acc1.user.username}} ({{log.acc1.num}})</td> 
-        <td>>></td>
-        <td>{{log.acc2.user.username}} ({{log.acc2.num}})</td> 
-    </tr>
+<table id="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th></th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    {% for log, amount, message in l %}
+    <tbody>
+        <tr onclick="historyOnClick(this)">
+            <td>{{log.name}}</td> 
+            <td></td>
+            <td>{{amount}}</td>
+        </tr>
+        <tr>
+            <td>{{log.acc1.user.username}} ({{log.acc1.num}})</td> 
+            <td>>></td>
+            <td>{{log.acc2.user.username}} ({{log.acc2.num}})</td> 
+        </tr>
+        <tr>
+            <!-- FAULT: A03:2021-Injection (Allows execution of JS, etc.!) -->
+            <!-- FIX: Remove safe from inside of the <td> tag below -->
+            <td colspan="3" class="message">Message:<br>{% for r in message %}ー {{r | safe}}<br>{% endfor %}</td>
+        </tr>
+    </tbody>
     {% endfor %} 
 </table>
-
+<p class="disclaimer">*Not all logs are shown to the user.<br>
+If you think you may have encountered a problem, please be in contact with us.</p>
 {% endblock content %}

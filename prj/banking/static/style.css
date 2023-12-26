@@ -159,6 +159,10 @@ p, label {
     color: rgb(68, 68, 68)
 }
 
+td.message {
+    font-size: 14px;
+}
+
 input, button, textarea {
     font-family: "DM Sans";
     font-size: 15px;
@@ -255,19 +259,36 @@ table {
 }
 
 tr {
-    border: #888888 solid 1px;
+    border: #757575 solid 1px;
     border-spacing:0;
 }
 
-tr:nth-child(2n+2) {
+tbody tr:first-child { transition:0.15s; }
+
+tbody tr:first-child:hover {
+    background-color:#ebebeb;
+}
+
+tbody tr:nth-child(2), tbody tr:last-child {
+    background-color:#f5f5f5;
+    display: none;
+} 
+
+tbody tr:last-child {
+    border-bottom:  #757575 solid 1px !important;
+}
+
+/* FOCUS */
+tbody.focus tr:nth-child(2), tbody.focus tr:last-child {
+    display: table-row;
+}
+
+tbody.focus tr {
     border-bottom:rgb(196, 196, 196) solid 1px;
 }
 
-tr:nth-child(2n+3) {
-    font-size: 14px;
-    background-color:#f5f5f5;
-}
 
+/* GENERAL */
 th, td {
     padding: 2px 5px;
     margin: 0;
@@ -333,4 +354,8 @@ p.big_btn {
 
 a.big_btn:hover {
     background-color: rgb(48, 126, 48);
+}
+
+.disclaimer {
+    color: gray;
 }

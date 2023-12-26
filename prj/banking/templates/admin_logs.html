@@ -1,21 +1,65 @@
 <html>
+    <style>
+        .wrap {
+            overflow: auto;
+            width: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th { border: 1px solid black; border-right: 1px solid gray; }
+        th:last-child { border-right: 1px solid black; }
+
+        th, td {
+            padding: 2px 6px;
+        }
+
+        td { border-right: 1px solid gray; border-bottom: 1px solid gray; }
+
+        td:first-child { border-left: 1px solid black; }
+        td:last-child { border-right: 1px solid black; }
+        
+        tbody:last-child tr td { border-bottom: 1px solid black; }
+        
+    </style>
+
     <body>
         <p><a href="/admin/">Return to Control Panel</a></p>
         <h1>Logs</h1>
-        <table id="admin">
-            {% for log in logs %}
+        <div class="wrap">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{log.type}}</td>
+                    <th>name (id)</th>
+                    <th>acc1</th>
+                    <th>acc2</th>
+                    <th>sdetail1</th>
+                    <th>sdetail2</th>
+                    <th>ldetail</th>
+                    <th style="min-width: 50px; text-align: center;"></th>
+                    <th>ip</th>
+                    <th>date</th>
+                </tr>
+            </thead>
+            {% for log in logs %}
+            <tbody>
+                <tr>
+                    <td>{% if log.name %}{{log.name}} ({% endif %}{{log.type}}{% if log.name %}){% endif %}</td>
                     <td>{{log.acc1.num}}<br>{{log.acc1.user.username}}</td> 
                     <td>{{log.acc2.num}}<br>{{log.acc2.user.username}}</td> 
                     <td>{{log.sdetail1}}</td>
                     <td>{{log.sdetail2}}</td>
-                    <td>{{log.ldetail}}</td>
-                    <td>{% if log.type == "transaction" %}<a>Cancel</a>{% endif %}</td>
+                    <td style="overflow: auto; max-width: 200px;">{{log.ldetail}}</td>
+                    <td>{% if log.type == "transaction" and log.hidden == False %}<a href="./{{log.id}}/cancel" onclick="return confirm('Are you sure you want to cancel this transaction?')">Cancel</a>{% endif %}</td>
                     <td>{{log.ip}}</td>
                     <td>{{log.date}}</td>
                 </tr>
+            </tbody>
             {% endfor %} 
         </table>
+        </div>
     </body>
 </html>

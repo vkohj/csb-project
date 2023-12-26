@@ -4,6 +4,7 @@
 
 <p class="mt20 mb0"><a href="../login"><< Return to login</a></p>
 <h1 class="mt0">Create account</h1>
+
 <form method="post">
     {% csrf_token %}
     <p id="state" class="err">{{state}}</p>
@@ -12,6 +13,22 @@
         <label for="username">Username: </label>
         <input name="username" id="username" type="text" required>
     </div>
+
+    <!--
+    FAULT: A04:2021-Insecure Design (Password is automatically generated, 
+            and only 6 letters long)
+    FIX:
+    
+    <div>
+        <label for="pswd">Password: </label>
+        <input name="pswd" id="pswd" type="password" required>
+    </div>
+
+    <div>
+        <label for="pswd2">Confirm Password: </label>
+        <input name="pswd2" id="pswd2" type="password" required>
+    </div>
+    -->
 
     <button type="submit">Create</button>
 </form>

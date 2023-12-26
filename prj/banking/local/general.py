@@ -9,8 +9,21 @@ def localCheckNoSpecials(str):
     return True
 
 def localCheckPassword(pswd):
+    # FAULT: A04:2021-Insecure Design (Password is automatically generated, 
+    #        and only 6 letters long)
+
+    # REMOVE:
     if len(pswd) < 5: return False
-    if " " in pswd: return False
+    # FIX:
+    # if len(pswd) < 10: return False
+    
+    # Check if all characters in string are allowed
+    for c in str:
+        if c in string.ascii_letters: continue
+        if c in string.digits: continue
+        if c in string.punctuation: continue
+        return False
+
     return True
 
 def localGetNumberStr(num : str):
@@ -26,12 +39,17 @@ def localGetErr(request):
 
     if   t == "l_invalid":  return "Invalid login credentials, please try again."
     elif t == "c_exists":   return "Username is already in use!"
-    elif t == "c_username": return "Username must be between 4 and 32 letters. Username cannot include special characters."
+    elif t == "c_username": return "Username must be between 6 and 32 letters. Username cannot include special characters."
+    elif t == "c_password": return "Password not acceptable. It may be too short or contain illegal characters. Characters allowed include ASCII characters, numbers and punctuation."
+    elif t == "c_nomatch": return "The passwords entered do not match."
+    elif t == "l_toomany_n": return "Too many attempts. Please wait a few minutes."
+    elif t == "l_toomany_r": return "Too many attempts. Please wait a few minutes."
     elif t == "err": return "Unknown error has occured."
 
 
 
 def localGetAddress(request):
+    if request is None: return ""
     forward = request.META.get('HTTP_X_FORWARDED_FOR')
     if forward:
         return forward.split(',')[0]
